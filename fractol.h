@@ -24,35 +24,43 @@
 
 # define WIDTH 800
 # define HEIGHT 800
+# define MAX_ITER 100
+
+typedef enum	e_fractal_type
+{
+	MANDELBROT,
+	JULIA
+}				t_fractal_type;
 
 typedef struct	s_complex
 {
 	double	real;
 	double	imag;
-}	t_complex;
+}				t_complex;
 
-typedef struct	s_img
+typedef struct	s_data
 {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		endian;
 	int		line_len;
-}	t_img;
+}				t_data;
 
 typedef struct	s_fractal
 {
-	char	*name;
-	void	*mlx;
-	void	*win;
-	t_img	img;
-	long	za;
-	long	zb;
-	long	ca;
-	long	cb;
-}	t_fractal;
+	void			*mlx;
+	void			*win;
+	t_data			data;
+	t_tractal_type	type;
+	t_complex		julia_c;
+	double			zoom;
+	double			offset_x;
+	double			offset_y;
+}				t_fractal;
 
-void	init_fractal(t_fractal *fractal);
+void	init_mlx(t_fractal *fractal);
+void	init_fractal(t_fractal *fractal, t_type type, t_complex julia_c);
 void	draw_fractal(t_fractal *fractal);
 
 #endif
