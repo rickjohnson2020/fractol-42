@@ -12,28 +12,28 @@
 
 NAME = fractol
 
-SRCS = main.c init.c mandelbrot.c event.c
+SRCS := main.c init.c fractal.c event.c \
 
-OBJS = $(SRCS:.c = .o)
+OBJS := $(SRCS:.c = .o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-MLX_FLAGS = -lmlx
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 MLX_DIR = ./minilibx-linux
-MLK = $(MLX_DIR)/libmlx.a
+MLX = $(MLX_DIR)/libmlx.a
+MLX_FLAGS = -lmlx -lXext -lX11 -lm -lz
 
 INCLUDES = -I includes -I $(LIBFT_DIR) -I $(MLX_DIR)
 
-RM = rm -f
+RM = rm -fi
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT) $(MLK)
-	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx_Linux -lXext -lX11 -lm -lz
+$(NAME): $(OBJS) $(LIBFT) $(MLX)
+	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBFT_DIR) -lft -L$(MLX_DIR) $(MLX_FLAGS)
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
