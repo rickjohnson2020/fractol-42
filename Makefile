@@ -6,18 +6,19 @@
 #    By: riyano <riyano@student.42london.com>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/17 12:43:55 by riyano            #+#    #+#              #
-#    Updated: 2025/02/17 13:13:36 by riyano           ###   ########.fr        #
+#    Updated: 2025/02/18 14:10:57 by riyano           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
 
-SRCS := main.c init.c fractal.c event.c \
-
-OBJS := $(SRCS:.c = .o)
+SRCS := main.c init.c fractal.c event.c
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
+
+BUILD_DIR := build
+OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -28,12 +29,12 @@ MLX_FLAGS = -lmlx -lXext -lX11 -lm -lz
 
 INCLUDES = -I includes -I $(LIBFT_DIR) -I $(MLX_DIR)
 
-RM = rm -fi
+RM = rm -f
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(MLX)
-	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBFT_DIR) -lft -L$(MLX_DIR) $(MLX_FLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ -L$(LIBFT_DIR) -lft -L$(MLX_DIR) $(MLX_FLAGS)
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
@@ -41,11 +42,12 @@ $(LIBFT):
 $(MLX):
 	@$(MAKE) -C $(MLX_DIR)
 
-%.o: %.c fractol.h
+$(BUILD_DIR)/%.o: %.c fractol.h
+	@if [ ! -d $(@D) ]; then mkdir -pv $(@D); fi
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) -r $(BUILD_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
 	@$(MAKE) -C $(MLX_DIR) clean
 
