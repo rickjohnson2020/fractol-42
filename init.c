@@ -41,12 +41,13 @@ void	init_mlx(t_fractal *fractal)
 	fractal->data.addr = mlx_get_data_addr(fractal->data.img, &fractal->data.bits_per_pixel, &fractal->data.line_len, &fractal->data.endian);
 }
 
-void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex julia_c)
+void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
 {
 	fractal->type = type;
 	fractal->zoom = 1.0;
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
+	fractal->offset_step = 0.1;
 	if (type == JULIA)
 	{
 		if (julia_c == NULL)
@@ -55,6 +56,10 @@ void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex julia_c)
 			fractal->julia_c.imag = 0.27015;
 		}
 		else
-			fractal->julia_c = julia_c;
+		{
+			fractal->julia_c.real = julia_c->real;
+			fractal->julia_c.imag = julia_c->imag;
+		}
+
 	}
 }

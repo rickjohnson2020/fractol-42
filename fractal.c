@@ -1,6 +1,6 @@
 #include "fractol.h"
 
-int	calculate_mandelbrot(double a, double b);
+int	calculate_mandelbrot(int x, int y, t_fractal *fractal);
 
 void	put_color_to_pixel(t_data *data, int x, int y, int color)
 {
@@ -23,14 +23,14 @@ int calculate_color(int iter)
 	int		b;
 
 	if (iter == MAX_ITER)
-        return COLOR_BLACK;
+		return COLOR_BLACK;
 	else
 	{
-		t = (double)iterations / 100.0;
+		t = (double)iter / 100.0;
 		r = (int)(9 * (1 - t) * t * t * t * 255);
 		g = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
 		b = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
-		return (r << 16) | (g << 8) | b; // RGB合成
+		return (r << 16) | (g << 8) | b;
 	}
 }
 
@@ -47,12 +47,12 @@ void	draw_fractal(t_fractal *fractal)
 		x = 0;
 		while (x <= WIDTH)
 		{
-			if (fractal->type == "MANDELBROT")
+			if (fractal->type == MANDELBROT)
 				iter = calculate_mandelbrot(x, y, fractal);
-			else if (fractal->type == "JULIA")
+			else if (fractal->type == JULIA)
 				iter = calculate_mandelbrot(x, y, fractal);
 			color = calculate_color(iter);
-			put_color_to_pixel(fractal->data, x, y, color);
+			put_color_to_pixel(&fractal->data, x, y, color);
 			x++;
 		}
 		y++;
@@ -60,7 +60,6 @@ void	draw_fractal(t_fractal *fractal)
 	mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->data.img, 0, 0);
 }
 
-// z0 = 0 は固定で、変数cを動かす
 int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 {
 	double		c_real;
@@ -72,15 +71,16 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 	z.real = 0.0;
 	z.imag = 0.0;
 	c_real = map((double)x, 0, WIDTH, -2.0 * fractal->zoom + fractal->offset_x, 2.0 * fractal->zoom + fractal->offset_x);
-	c_imag = map((double)y, 0, HEITH,  -1.5 * fractal->zoom + fractal->offset_y, 1.5 * fractal->zoom + fractal->offset_y);
+	c_imag = map((double)y, 0, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y, 2.0 * fractal->zoom + fractal->offset_y);
 	iter = 0;
 	while (z.real * z.real + z.imag * z.imag <= 4)
 	{
 		temp = z.real * z.real - z.imag * z.imag + c_real;
 		z.imag = 2 * z.real * z.imag + c_imag;
 		z.real = temp;
-		if (iter++ >= MAX_ITER)
+		if (++iter >= MAX_ITER)
 			break ;
 	}
 	return (iter);
 }
+
