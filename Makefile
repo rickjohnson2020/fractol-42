@@ -12,10 +12,10 @@
 
 NAME = fractol
 
-SRCS := main.c init.c fractal.c event.c
+SRCS := main.c init.c render.c event.c
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -O2 -march=native -g
 
 BUILD_DIR := build
 OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)

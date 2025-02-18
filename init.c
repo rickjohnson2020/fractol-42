@@ -48,6 +48,15 @@ void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
 	fractal->offset_step = 0.1;
+	fractal->max_iter = 50;
+	//fractal->target_iter = 100;
+	fractal->current_x = 0;
+	fractal->current_y = 0;
+	fractal->pixels_processed = 0;
+	fractal->calc_count = 0;
+	fractal->total_pixels = HEIGHT * WIDTH;
+	fractal->iter_chunk = 10000000;
+	//fractal->reset_requested = 0;
 	if (type == JULIA)
 	{
 		if (julia_c == NULL)

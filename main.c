@@ -75,11 +75,10 @@ int	main(int ac, char **av)
 	}
 	init_mlx(&fractal);
 	init_fractal(&fractal, type, julia_c);
-	draw_fractal(&fractal);
+	//draw_fractal(&fractal);
 	mlx_mouse_hook(fractal.win, handle_zoom, &fractal);
 	mlx_key_hook(fractal.win, handle_key, &fractal);
-
+	mlx_loop_hook(fractal.mlx, render_frame, &fractal);
 	mlx_loop(fractal.mlx);
 	return (0);
 }
-
