@@ -23,7 +23,7 @@
 
 # define ERROR_MESSAGE "Usage: \"./fractol mandelbrot\" or \"./fractol julia <value_1> <value_2>\""
 
-# define WIDTH 1080
+# define WIDTH 1920
 # define HEIGHT 1080
 # define OPE_PER_FLAME 10000000
 # define INIT_ITER 50
@@ -73,6 +73,7 @@ typedef struct	s_fractal
 	t_data			data;
 	t_fractal_type	type;
 	t_complex		julia_c;
+	int				color;
 	double			zoom;
 	double			offset_x;
 	double			offset_y;
@@ -83,6 +84,7 @@ typedef struct	s_fractal
 	//int				current_y;
 	int				*calc_count;
 	double			*z;
+	double			c[2];
 	int				pixels_processed;
 	int				total_pixels;
 	//int				needs_redraw;
