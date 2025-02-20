@@ -3,17 +3,21 @@
 int	handle_zoom(int button, int x, int y, void *param)
 {
 	t_fractal	*fractal;
-
-	x = 0;//TODO:
-	y = 0;//TODO:
+	double		mouse_real;
+	double		mouse_imag;
+	double		new_zoom;
+	
 	fractal = (t_fractal *)param;
+	mouse_real = map((double)x, 0, WIDTH, -2.0 * fractal->zoom + fractal->offset_x, 2.0 * fractal->zoom + fractal->offset_x);
+	mouse_imag = map((double)y, 0, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y, 2.0 * fractal->zoom + fractal->offset_y);
 	if (button == MOUSE_DOWN)
-		fractal->zoom *= 0.9;
+		new_zoom = fractal->zoom *= 0.9;
 	else if (button == MOUSE_UP)
-		fractal->zoom *= 1.1;
-	fractal->needs_redraw = 1;
-	//fractal->reset_requested = 1;
-	render_frame(fractal);
+		new_zoom = fractal->zoom *= 1.1;
+	else
+		new_zoom = fractal->zoom;
+	fractal->zoom = new_zoom;
+	draw_fractal(fractal);
 	return (0);
 }
 
@@ -49,7 +53,6 @@ int	handle_key(int keycode, void *param)
 		fractal->offset_y += fractal->offset_step * fractal->zoom;
 		//draw_fractal(fractal);
 	}
-	fractal->needs_redraw = 1;
 	//fractal->reset_requested = 1;
 	render_frame(fractal);
 	return (0);

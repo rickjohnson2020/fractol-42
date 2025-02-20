@@ -4,33 +4,70 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal);
 int calculate_color(int iter, t_fractal *fractal);
 void	put_color_to_pixel(t_data *data, int x, int y, int color);
 
-static int	process_pixel(t_fractal *fractal, int x, int y)
+static char	*get_pixel(int x, int y, t_data *data)
 {
-	int	iter;
-	int	color;
+	return (data->addr + (y * data->line_len + x * (data->bits_per_pixel / 8)));
+}
+
+static int	calc_pixel(int n, t_fractal *fractal)
+{
+	char	*dst;
+	int		x;
+	int		y;
+	int		iter;
 
 	iter = 0;
-	if (fractal->type == MANDELBROT)
-		iter = calculate_mandelbrot(x, y, fractal);
-	// else if (fractal->type == JULIA)
-	// 	iter = calculate_mandelbrot(x, y, fractal);
-	color = calculate_color(iter, fractal);
-	put_color_to_pixel(&fractal->data, x, y, color);
-	return (iter);
-}
-
-static void	advance_pixel_coordinates(t_fractal *fractal)
-{
-	fractal->current_x++;
-	fractal->pixels_processed++;
-	// fractal->calc_count = fractal->max_iter;
-
-	if (fractal->current_x >= WIDTH)
+	x = n % WIDTH;
+	y = n / WIDTH;
+	dst = get_pixel(x, y, &fractal->data);
+	if (*dst == 0)
 	{
-		fractal->current_x = 0;
-		fractal->current_y++;
+		if (fractal->type == MANDELBROT)
+			iter = calculate_mandelbrot(x, y, fractal);
+		else
+			//TODO: calculate_julia();
+		if (iter >= 0)
+		{
+			*(unsigned int *)dst = calculate_color(iter, fractal);
+			return (iter);
+		}
+		else
+		{
+			*(unsigned int *)dst = 0;
+			return (fractal->max_iter);
+		}
+	
 	}
+	return (-1);
 }
+
+// static int	process_pixel(t_fractal *fractal, int x, int y)
+// {
+// 	int	iter;
+// 	int	color;
+
+// 	iter = 0;
+// 	if (fractal->type == MANDELBROT)
+// 		iter = calculate_mandelbrot(x, y, fractal);
+// 	// else if (fractal->type == JULIA)
+// 	// 	iter = calculate_mandelbrot(x, y, fractal);
+// 	color = calculate_color(iter, fractal);
+// 	put_color_to_pixel(&fractal->data, x, y, color);
+// 	return (iter);
+// }
+
+// static void	advance_pixel_coordinates(t_fractal *fractal)
+// {
+// 	fractal->current_x++;
+// 	fractal->pixels_processed++;
+// 	// fractal->calc_count = fractal->max_iter;
+
+// 	if (fractal->current_x >= WIDTH)
+// 	{
+// 		fractal->current_x = 0;
+// 		fractal->current_y++;
+// 	}
+// }
 
 void	put_color_to_pixel(t_data *data, int x, int y, int color)
 {
@@ -64,69 +101,98 @@ int calculate_color(int iter, t_fractal *fractal)
 	}
 }
 
-int	draw_fractal(t_fractal *fractal)
+void	init_iter(t_fractal *fractal, int iter)
 {
-	int	iter;
+	int	i;
 
-	while (fractal->pixels_processed < fractal->total_pixels &&
-			fractal->calc_count < fractal->iter_chunk)
+	fractal->pixels_processed = 0;
+	if (iter)
 	{
-		if (fractal->current_y >= HEIGHT)
-			break ;
-		iter = process_pixel(fractal, fractal->current_x, fractal->current_y);
-		fractal->calc_count += iter;
-		advance_pixel_coordinates(fractal);
+		//TODO: check
+		fractal->max_iter = iter;
+		i = 0;
+		while (i < fractal->total_pixels * 2)
+		{
+			fractal->z[i] = 0.0;
+			i++;
+		}
+		i = 0;
+		while (i < fractal->total_pixels)
+		{
+			fractal->calc_count[i] = 0;
+			i++;
+		}
 	}
-	return (fractal->pixels_processed < fractal->total_pixels);
+	else
+	{
+		if (fractal->max_iter < INT_MAX / 1.5)
+			fractal->max_iter = fractal->max_iter * 1.5;
+	}
 }
 
-int	render_frame(void *param)
+int	render_frame(t_fractal *fractal)
 {
-	t_fractal	*fractal;
-	int			continue_rendering;
+	int	iter;
+	int	n;
 
-	fractal = (t_fractal *)param;
-	if (fractal->needs_redraw)
+	iter = 0;
+	n = fractal->pixels_processed;
+	while (n < fractal->total_pixels)
 	{
-		if (fractal->pixels_processed >= fractal->total_pixels)
+		if (n >= fractal->total_pixels - 1 || iter > OPE_PER_FLAME)
 		{
-			fractal->pixels_processed = 0;
-			fractal->current_x = 0;
-			fractal->current_y = 0;
-			fractal->calc_count = 0;
+			mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->data.img, 0, 0);
+			if (n >= fractal->total_pixels)
+				init_iter(fractal, 0);
+			return (0);
 		}
-		continue_rendering = draw_fractal(fractal);
-		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->data.img, 0, 0);
-		if (!continue_rendering)
-		{
-			fractal->needs_redraw = 0;
-			printf("Partial rendering completed. Pixels processed: %d, Total calculations: %lld\n", fractal->pixels_processed, fractal->calc_count);
-		}
+		iter += calc_pixel(17 * n % (WIDTH * HEIGHT), fractal);
+		//fractal->current_x++;
+		fractal->pixels_processed = n;
+		n++;
 	}
 	return (0);
+}
+
+void	draw_fractal(t_fractal *fractal)
+{
+	t_data	*data;
+
+	init_iter(fractal, INIT_ITER);
+	data = fractal->data.img;
+	if (data->img)
+		mlx_destroy_image(fractal->mlx, fractal->data.img);
+	data->img = mlx_new_image(fractal->mlx, WIDTH, HEIGHT);
+	data->addr = mlx_get_data_addr(fractal->data.img, &fractal->data.bits_per_pixel, &fractal->data.line_len, &fractal->data.endian);
+	render_frame(fractal);
 }
 
 int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 {
 	double		c_real;
 	double		c_imag;
-	t_complex	z;
+	double		*z;
 	double		temp;
 	int			iter;
+	int			idx;
 
-	z.real = 0.0;
-	z.imag = 0.0;
+	idx = (y * WIDTH + x) * 2;
+	z = &(fractal->z[idx]);
+
 	c_real = map((double)x, 0, WIDTH, -2.0 * fractal->zoom + fractal->offset_x, 2.0 * fractal->zoom + fractal->offset_x);
 	c_imag = map((double)y, 0, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y, 2.0 * fractal->zoom + fractal->offset_y);
 	iter = 0;
-	while (z.real * z.real + z.imag * z.imag <= 4)
+	while (z[0] * z[0] + z[1] * z[1] < 4 && iter < fractal->max_iter)
 	{
-		temp = z.real * z.real - z.imag * z.imag + c_real;
-		z.imag = 2 * z.real * z.imag + c_imag;
-		z.real = temp;
-		if (++iter >= fractal->max_iter)
-			break ;
+		temp = z[0] * z[0] - z[1] * z[1] + c_real;
+		z[1] = 2 * z[0] * z[1] + c_imag;
+		z[0] = temp;
+		iter++;
 	}
+	fractal->calc_count[y * WIDTH + x] += iter;
+	//if iter is reached to max, return -1 as it is not diverged
+	if (iter == fractal->max_iter)
+		return (-1);
 	return (iter);
 }
 

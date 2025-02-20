@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <math.h>
+# include <limits.h>
 # include "./minilibx-linux/mlx.h"
 # include "./libft/libft.h"
 
@@ -24,6 +25,8 @@
 
 # define WIDTH 1080
 # define HEIGHT 1080
+# define OPE_PER_FLAME 10000000
+# define INIT_ITER 50
 // # define MAX_ITER 50
 
 # define COLOR_BLACK 0x000000
@@ -76,21 +79,21 @@ typedef struct	s_fractal
 	double			offset_step;
 	int				max_iter;
 	int				target_iter;
-	int				current_x;
-	int				current_y;
-	long long		calc_count;
+	//int				current_x;
+	//int				current_y;
+	int				*calc_count;
+	double			*z;
 	int				pixels_processed;
 	int				total_pixels;
-	int				needs_redraw;
-	long long		iter_chunk;
-	//int				reset_requested;
+	//int				needs_redraw;
 }				t_fractal;
 
 void	init_mlx(t_fractal *fractal);
 void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c);
-int		draw_fractal(t_fractal *fractal);
+void	draw_fractal(t_fractal *fractal);
 int		handle_zoom(int button, int x, int y, void *param);
 int		handle_key(int keycode, void *param);
-int		render_frame(void *param);
-
+int		render_frame(t_fractal *fractal);
+double	map(double to_scale, double old_min, double old_max, double new_min, double new_max);
+void	init_iter(t_fractal *fractal, int iter);
 #endif
