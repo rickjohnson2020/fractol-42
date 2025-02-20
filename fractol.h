@@ -23,8 +23,8 @@
 
 # define ERROR_MESSAGE "Usage: \"./fractol mandelbrot\" or \"./fractol julia <value_1> <value_2>\""
 
-# define WIDTH 1920
-# define HEIGHT 1080
+# define WIDTH 800
+# define HEIGHT 800
 # define OPE_PER_FLAME 10000000
 # define INIT_ITER 50
 // # define MAX_ITER 50

@@ -25,24 +25,21 @@ static int	calc_pixel(int n, t_fractal *fractal)
 		if (fractal->type == MANDELBROT)
 		{
 			iter = calculate_mandelbrot(x, y, fractal);
-			printf("%d\n", iter);
 		}
 		else
 		{
-			printf("calculate julia");
+			//TODO: calculate_julia();
 			iter = 0;
 		}
-			//TODO: calculate_julia();
 		if (iter >= 0)
 		{
-			*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[n] * 10) * 10, 255, 255);
-			printf("dest: %s\n", dst);
+			*(unsigned int *)dst = calculate_color(iter, fractal);
+			//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[n] * 10) * 10, 255, 255);
 			return (iter);
 		}
 		else
 		{
-			*(unsigned int *)dst = 0;
-			printf("%s\n", dst);
+			*(unsigned int *)dst = COLOR_BLACK;
 			return (fractal->max_iter);
 		}
 	
@@ -159,12 +156,13 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 	to_z(x, y, c, fractal);
 	iter = 0;
 	z = &(fractal->z[(y * WIDTH + x) * 2]);
-	while (z[0] * z[0] + z[1] * z[1] < 4.00001 && iter < fractal->max_iter)
+	while (z[0] * z[0] + z[1] * z[1] < 4)
 	{
 		temp = z[0] * z[0] - z[1] * z[1] + c[0];
 		z[1] = 2 * z[0] * z[1] + c[1];
 		z[0] = temp;
-		iter++;
+		if (++iter >= fractal->max_iter)
+			break ;
 	}
 	fractal->calc_count[y * WIDTH + x] += iter;
 	//if iter is reached to max, return -1 as it is not diverged

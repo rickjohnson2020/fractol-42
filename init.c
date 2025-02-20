@@ -44,12 +44,12 @@ void	init_mlx(t_fractal *fractal)
 void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
 {
 	fractal->type = type;
-	fractal->color = 120;
+	//fractal->color = 120;
 	fractal->zoom = 200;
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
-	fractal->offset_step = 0.1;
-	fractal->max_iter = 50;
+	fractal->offset_step = 100;
+	fractal->max_iter = INIT_ITER;
 	//fractal->target_iter = 100;
 	//fractal->current_x = 0;
 	//fractal->current_y = 0;
@@ -58,8 +58,8 @@ void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
 	fractal->total_pixels = HEIGHT * WIDTH;
 	//fractal->iter_chunk = 10000000;
 	//fractal->reset_requested = 0;
-	fractal->c[0] = -0.30;
-	fractal->c[1] = -0.63;
+	fractal->c[0] = 0.0;
+	fractal->c[1] = 0.0;
 	fractal->z = malloc(sizeof(double) * WIDTH * HEIGHT * 2);
 	fractal->calc_count = malloc(sizeof(int) * WIDTH * HEIGHT);
 	init_iter(fractal, INIT_ITER);
