@@ -20,29 +20,16 @@ static int	calc_pixel(int n, t_fractal *fractal)
 	x = n % WIDTH;
 	y = n / WIDTH;
 	dst = get_pixel(x, y, &fractal->data);
-	if (*dst == 0)
+	if (*dst == COLOR_BLACK)
 	{
 		if (fractal->type == MANDELBROT)
-		{
 			iter = calculate_mandelbrot(x, y, fractal);
-		}
 		else
-		{
 			//TODO: calculate_julia();
 			iter = 0;
-		}
-		if (iter >= 0)
-		{
-			*(unsigned int *)dst = calculate_color(iter, fractal);
-			//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[n] * 10) * 10, 255, 255);
-			return (iter);
-		}
-		else
-		{
-			*(unsigned int *)dst = COLOR_BLACK;
-			return (fractal->max_iter);
-		}
-	
+		*(unsigned int *)dst = calculate_color(iter, fractal);
+		//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[n] * 10) * 10, 255, 255);
+		return (iter);
 	}
 	return (1);
 }
@@ -165,9 +152,6 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 			break ;
 	}
 	fractal->calc_count[y * WIDTH + x] += iter;
-	//if iter is reached to max, return -1 as it is not diverged
-	if (iter == fractal->max_iter)
-		return (-1);
 	return (iter);
 }
 
