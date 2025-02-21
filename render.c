@@ -4,31 +4,34 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal);
 int calculate_color(int iter, t_fractal *fractal);
 void	put_color_to_pixel(t_data *data, int x, int y, int color);
 int	hsv2rgb(int h, int s, int v);
+int	calculate_julia(int x, int y, t_fractal *fractal);
 
 static char	*get_pixel(int x, int y, t_data *data)
 {
 	return (data->addr + (y * data->line_len + x * (data->bits_per_pixel / 8)));
 }
 
-static int	calc_pixel(int n, t_fractal *fractal)
+static int	calc_pixel(int pixel_idx, t_fractal *fractal)
 {
 	char	*dst;
 	int		x;
 	int		y;
 	int		iter;
 
-	x = n % WIDTH;
-	y = n / WIDTH;
+	x = pixel_idx % WIDTH;
+	y = pixel_idx / WIDTH;
 	dst = get_pixel(x, y, &fractal->data);
-	if (*dst == COLOR_BLACK)
+	//TODO: check the condition here.
+	if (*dst == 0)
 	{
 		if (fractal->type == MANDELBROT)
 			iter = calculate_mandelbrot(x, y, fractal);
+		else if (fractal->type == JULIA)
+			iter = calculate_julia(x, y, fractal);
 		else
-			//TODO: calculate_julia();
 			iter = 0;
 		*(unsigned int *)dst = calculate_color(iter, fractal);
-		//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[n] * 10) * 10, 255, 255);
+		//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[pixel_idx] * 10) * 10, 255, 255);
 		return (iter);
 	}
 	return (1);
@@ -90,23 +93,22 @@ void	init_iter(t_fractal *fractal, int iter)
 int	render_frame(t_fractal *fractal)
 {
 	int	iter;
-	int	n;
+	int	pixel_idx;
 
 	iter = 0;
-	n = fractal->pixels_processed;
-	while (n < fractal->total_pixels)
+	pixel_idx = fractal->pixels_processed;
+	while (pixel_idx < fractal->total_pixels)
 	{
-		if (n >= fractal->total_pixels - 1 || iter > OPE_PER_FLAME)
+		if (pixel_idx >= fractal->total_pixels - 1 || iter > OPE_PER_FLAME)
 		{
 			mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->data.img, 0, 0);
-			if (n >= fractal->total_pixels - 1)
+			if (pixel_idx >= fractal->total_pixels - 1)
 				init_iter(fractal, 0);
 			return (0);
 		}
-		iter += calc_pixel(17 * n % (WIDTH * HEIGHT), fractal);
-		//fractal->current_x++;
-		fractal->pixels_processed = n;
-		n++;
+		iter += calc_pixel(17 * pixel_idx % fractal->total_pixels, fractal);
+		fractal->pixels_processed = pixel_idx;
+		pixel_idx++;
 	}
 	return (0);
 }
@@ -143,7 +145,7 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 	to_z(x, y, c, fractal);
 	iter = 0;
 	z = &(fractal->z[(y * WIDTH + x) * 2]);
-	while (z[0] * z[0] + z[1] * z[1] < 4)
+	while (z[0] * z[0] + z[1] * z[1] <= 4)
 	{
 		temp = z[0] * z[0] - z[1] * z[1] + c[0];
 		z[1] = 2 * z[0] * z[1] + c[1];
@@ -182,4 +184,32 @@ int	hsv2rgb(int h, int s, int v)
 		return (trgb(0, max, min, (360 - h) * (max - min) / 60));
 	else
 		return (0);
+}
+
+int	calculate_julia(int x, int y, t_fractal *fractal)
+{
+	double	*z;
+	double	temp;
+	int		iter;
+	double	c[2];
+	//double	z_init[2];
+
+	to_z(x, y, c, fractal);
+	iter = 0;
+	if (fractal->calc_count[y * WIDTH + x] == 0)
+	{
+		fractal->z[(y * WIDTH + x) * 2 + 0] = c[0];
+		fractal->z[(y * WIDTH + x) * 2 + 1] = c[1];
+	}
+	z = &(fractal->z[(y * WIDTH + x) * 2]);
+	while (z[0] * z[0] + z[1] * z[1] <= 4)
+	{
+		temp = z[0] * z[0] - z[1] * z[1] + fractal->c[0];
+		z[1] = 2 * z[0] * z[1] + fractal->c[1];
+		z[0] = temp;
+		if (++iter >= fractal->max_iter)
+			break ;
+	}
+	fractal->calc_count[y * WIDTH + x] += iter;
+	return (iter);
 }

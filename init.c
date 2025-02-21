@@ -67,13 +67,17 @@ void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
 	{
 		if (julia_c == NULL)
 		{
-			fractal->julia_c.real = -0.7;
-			fractal->julia_c.imag = 0.27015;
+			//fractal->julia_c.real = -0.7;
+			//fractal->julia_c.imag = 0.27015;
+			fractal->c[0] = -0.30;
+			fractal->c[1] = -0.63;
 		}
 		else
 		{
-			fractal->julia_c.real = julia_c->real;
-			fractal->julia_c.imag = julia_c->imag;
+			//fractal->julia_c.real = julia_c->real;
+			//fractal->julia_c.imag = julia_c->imag;
+			fractal->c[0] = julia_c->real;
+			fractal->c[1] = julia_c->imag;
 		}
 
 	}

@@ -64,6 +64,7 @@ int	main(int ac, char **av)
 		{
 			// julia_c->real = ft_atod(av[2]); //TODO:
 			// julia_c->imag = ft_atod(av[3]);//TODO:
+			julia_c = NULL;
 		}
 		else
 			ft_putstr_fd("Usage for Julia set: ./fractol julia <julia_real> <julia_imag>", 2);
