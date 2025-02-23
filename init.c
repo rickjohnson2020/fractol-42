@@ -41,44 +41,40 @@ void	init_mlx(t_fractal *fractal)
 	fractal->data.addr = mlx_get_data_addr(fractal->data.img, &fractal->data.bits_per_pixel, &fractal->data.line_len, &fractal->data.endian);
 }
 
-void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c)
+void	init_fractal(t_fractal *fractal)
 {
-	fractal->type = type;
 	//fractal->color = 120;
 	fractal->zoom = 200;
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
 	fractal->offset_step = 100;
 	fractal->max_iter = INIT_ITER;
-	//fractal->target_iter = 100;
-	//fractal->current_x = 0;
-	//fractal->current_y = 0;
 	fractal->pixels_processed = 0;
 	fractal->calc_count = 0;
 	fractal->total_pixels = HEIGHT * WIDTH;
-	//fractal->iter_chunk = 10000000;
-	//fractal->reset_requested = 0;
-	fractal->c[0] = 0.0;
-	fractal->c[1] = 0.0;
-	fractal->z = malloc(sizeof(double) * WIDTH * HEIGHT * 2);
-	fractal->calc_count = malloc(sizeof(int) * WIDTH * HEIGHT);
+	fractal->z->real = malloc(sizeof(double) * fractal->total_pixels);
+	fractal->z->imag = malloc(sizeof(double) * fractal->total_pixels);
+	//fractal->c[0] = 0.0;
+	//fractal->c[1] = 0.0;
+	//fractal->z = malloc(sizeof(double) * WIDTH * HEIGHT * 2);
+	fractal->calc_count = malloc(sizeof(int) * fractal->total_pixels);
 	init_iter(fractal, INIT_ITER);
-	if (type == JULIA)
-	{
-		if (julia_c == NULL)
-		{
-			//fractal->julia_c.real = -0.7;
-			//fractal->julia_c.imag = 0.27015;
-			fractal->c[0] = -0.30;
-			fractal->c[1] = -0.63;
-		}
-		else
-		{
-			//fractal->julia_c.real = julia_c->real;
-			//fractal->julia_c.imag = julia_c->imag;
-			fractal->c[0] = julia_c->real;
-			fractal->c[1] = julia_c->imag;
-		}
+	//if (type == JULIA)
+	//{
+	//	if (julia_c == NULL)
+	//	{
+	//		fractal->julia_c->real = -0.7;
+	//		fractal->julia_c->imag = 0.27015;
+	//		//fractal->c[0] = -0.30;
+	//		//fractal->c[1] = -0.63;
+	//	}
+	//	else
+	//	{
+	//		fractal->julia_c->real = julia_c->real;
+	//		fractal->julia_c->imag = julia_c->imag;
+	//		//fractal->c[0] = julia_c->real;
+	//		//fractal->c[1] = julia_c->imag;
+	//	}
 
-	}
+	//}
 }

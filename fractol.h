@@ -53,8 +53,8 @@ typedef enum	e_fractal_type
 
 typedef struct	s_complex
 {
-	double	real;
-	double	imag;
+	double	*real;
+	double	*imag;
 }				t_complex;
 
 typedef struct	s_data
@@ -72,22 +72,21 @@ typedef struct	s_fractal
 	void			*win;
 	t_data			data;
 	t_fractal_type	type;
-	t_complex		julia_c;
-	int				color;
+	t_complex		z;
+	//TODO: check (pointer for null)
+	t_complex		*julia_c;
+	//int				color;
 	double			zoom;
 	double			offset_x;
 	double			offset_y;
 	double			offset_step;
 	int				max_iter;
 	int				target_iter;
-	//int				current_x;
-	//int				current_y;
 	int				*calc_count;
-	double			*z;
-	double			c[2];
+	//double			*z;
+	//double			c[2];
 	int				pixels_processed;
 	int				total_pixels;
-	//int				needs_redraw;
 }				t_fractal;
 
 void	init_mlx(t_fractal *fractal);
