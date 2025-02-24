@@ -72,9 +72,14 @@ typedef struct	s_fractal
 	void			*win;
 	t_data			data;
 	t_fractal_type	type;
-	t_complex		z;
+	//t_complex		z;
+	double			*z_real;
+	double			*z_imag;
 	//TODO: check (pointer for null)
-	t_complex		*julia_c;
+	//t_complex		*julia_c;
+	double			julia_c_real;
+	double			julia_c_imag;
+	int				is_julia;
 	//int				color;
 	double			zoom;
 	double			offset_x;
@@ -90,7 +95,7 @@ typedef struct	s_fractal
 }				t_fractal;
 
 void	init_mlx(t_fractal *fractal);
-void	init_fractal(t_fractal *fractal, t_fractal_type type, t_complex *julia_c);
+void	init_fractal(t_fractal *fractal);
 void	draw_fractal(t_fractal *fractal);
 int		handle_zoom(int button, int x, int y, void *param);
 int		handle_key(int keycode, void *param);

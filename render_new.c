@@ -21,20 +21,20 @@ static int	calc_pixel(int pixel_idx, t_fractal *fractal)
 	x = pixel_idx % WIDTH;
 	y = pixel_idx / WIDTH;
 	dst = get_pixel(x, y, &fractal->data);
+	iter = 1;
 	//TODO: check the condition here.
 	if (*dst == 0)
 	{
 		if (fractal->type == MANDELBROT)
 			iter = calculate_mandelbrot(x, y, fractal);
+		// else if (fractal->type == JULIA)
+		// 	iter = calculate_julia(x, y, fractal);
 		else if (fractal->type == JULIA)
 			iter = calculate_julia(x, y, fractal);
-		else
-			iter = 0;
 		*(unsigned int *)dst = calculate_color(iter, fractal);
 		//*(unsigned int *)dst = hsv2rgb(fractal->color + sqrt(fractal->calc_count[pixel_idx] * 10) * 10, 255, 255);
-		return (iter);
 	}
-	return (1);
+	return (iter);
 }
 
 double	map(double to_scale, double old_min, double old_max, double new_min, double new_max)
@@ -71,14 +71,10 @@ void	init_iter(t_fractal *fractal, int iter)
 		//TODO: check
 		fractal->max_iter = iter;
 		i = 0;
-		while (i < fractal->total_pixels * 2)
-		{
-			fractal->z[i] = 0.0;
-			i++;
-		}
-		i = 0;
 		while (i < fractal->total_pixels)
 		{
+			fractal->z_real[i] = 0.0;
+			fractal->z_imag[i] = 0.0;
 			fractal->calc_count[i] = 0;
 			i++;
 		}
@@ -99,6 +95,7 @@ int	render_frame(t_fractal *fractal)
 	pixel_idx = fractal->pixels_processed;
 	while (pixel_idx < fractal->total_pixels)
 	{
+		//if all pixels are filled or iter count is reached limit 
 		if (pixel_idx >= fractal->total_pixels - 1 || iter > OPE_PER_FLAME)
 		{
 			mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->data.img, 0, 0);
@@ -106,6 +103,7 @@ int	render_frame(t_fractal *fractal)
 				init_iter(fractal, 0);
 			return (0);
 		}
+		//put color to dst
 		iter += calc_pixel(17 * pixel_idx % fractal->total_pixels, fractal);
 		fractal->pixels_processed = pixel_idx;
 		pixel_idx++;
@@ -137,23 +135,36 @@ int	calculate_mandelbrot(int x, int y, t_fractal *fractal)
 {
 	//double		c_real;
 	//double		c_imag;
-	double		*z;
+	//double		*z;
+
+	//t_complex	*c;
+
 	double		temp;
 	int			iter;
-	double		c[2];
+	//double		c[2];
+	double		c_real;
+	double		c_imag;
+	int			idx;
 
-	to_z(x, y, c, fractal);
+	idx = y * WIDTH + x;
+	fractal->z_real[idx] = 0.0;
+	fractal->z_imag[idx] = 0.0;
+	c_real = (double)(x - WIDTH / 2) / fractal->zoom - fractal->offset_x;
+	c_imag = (double)(y - HEIGHT / 2) / fractal->zoom - fractal->offset_y;
+
+
+	//to_z(x, y, c, fractal);
 	iter = 0;
-	z = &(fractal->z[(y * WIDTH + x) * 2]);
-	while (z[0] * z[0] + z[1] * z[1] <= 4)
+	//z = &(fractal->z[idx * 2]);
+	while (fractal->z_real[idx] * fractal->z_real[idx] + fractal->z_imag[idx] * fractal->z_imag[idx] <= 4)
 	{
-		temp = z[0] * z[0] - z[1] * z[1] + c[0];
-		z[1] = 2 * z[0] * z[1] + c[1];
-		z[0] = temp;
+		temp = fractal->z_real[idx] * fractal->z_real[idx] - fractal->z_imag[idx] * fractal->z_imag[idx] + c_real;
+		fractal->z_imag[idx] = 2 * fractal->z_real[idx] * fractal->z_imag[idx] + c_imag;
+		fractal->z_real[idx] = temp;
 		if (++iter >= fractal->max_iter)
 			break ;
 	}
-	fractal->calc_count[y * WIDTH + x] += iter;
+	fractal->calc_count[idx] += iter;
 	return (iter);
 }
 
@@ -188,28 +199,35 @@ int	hsv2rgb(int h, int s, int v)
 
 int	calculate_julia(int x, int y, t_fractal *fractal)
 {
-	double	*z;
+	//double	*z;
 	double	temp;
 	int		iter;
-	double	c[2];
+	//double	c[2];
+	//double	c_real;
+	//double	c_imag;
+	int		idx;
 	//double	z_init[2];
 
-	to_z(x, y, c, fractal);
+	idx = y * WIDTH + x;
+	fractal->z_real[idx] = (double)(x - WIDTH / 2) / fractal->zoom - fractal->offset_x;
+	fractal->z_imag[idx] = (double)(y - HEIGHT / 2) / fractal->zoom - fractal->offset_y;
+	//fractal->julia_c_real = (double)(x - WIDTH / 2) / fractal->zoom - fractal->offset_x;
+	//fractal->julia_c_imag = (double)(y - HEIGHT / 2) / fractal->zoom - fractal->offset_y;
 	iter = 0;
-	if (fractal->calc_count[y * WIDTH + x] == 0)
+	if (fractal->calc_count[idx] == 0)
 	{
-		fractal->z[(y * WIDTH + x) * 2 + 0] = c[0];
-		fractal->z[(y * WIDTH + x) * 2 + 1] = c[1];
+		fractal->z_real[idx] = fractal->julia_c_real;
+		fractal->z_imag[idx] = fractal->julia_c_imag;
 	}
-	z = &(fractal->z[(y * WIDTH + x) * 2]);
-	while (z[0] * z[0] + z[1] * z[1] <= 4)
+	//z = &(fractal->z[(y * WIDTH + x) * 2]);
+	while (fractal->z_real[idx] * fractal->z_real[idx] + fractal->z_imag[idx] * fractal->z_imag[idx] <= 4)
 	{
-		temp = z[0] * z[0] - z[1] * z[1] + fractal->c[0];
-		z[1] = 2 * z[0] * z[1] + fractal->c[1];
-		z[0] = temp;
+		temp = fractal->z_real[idx] * fractal->z_real[idx] - fractal->z_imag[idx] * fractal->z_imag[idx] + fractal->julia_c_real;
+		fractal->z_imag[idx] = 2 * fractal->z_real[idx] * fractal->z_imag[idx] + fractal->julia_c_imag;
+		fractal->z_real[idx] = temp;
 		if (++iter >= fractal->max_iter)
 			break ;
 	}
-	fractal->calc_count[y * WIDTH + x] += iter;
+	fractal->calc_count[idx] += iter;
 	return (iter);
 }

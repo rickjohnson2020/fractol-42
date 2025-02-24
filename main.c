@@ -23,6 +23,7 @@
  		return (-1);
 	if (*str == '.')
 		return (-1);
+	dot_num = 0;
  	while (*str)
  	{
 		if (*str == '.')
@@ -45,7 +46,6 @@
 	double	f;
 	double	decimal_place;
 
- 	result = 0;
  	sign = 1;
  	i = 0;
 	f = 0;
@@ -58,6 +58,7 @@
  		i = i * 10 + (*str++ - '0');
 	if (*str == '.')
 		str++;
+	decimal_place = 1;
 	while (*str)
 	{
 		decimal_place /= 10;
@@ -78,7 +79,7 @@ int	set_fractal_type(char *str, t_fractal_type *type)
 	int	len;
 
 	len = ft_strlen(str);
-	if (ft_strncmp(str, "mandlebrot", len) == 0)
+	if (ft_strncmp(str, "mandelbrot", len) == 0)
 		*type = MANDELBROT;
 	else if (ft_strncmp(str, "julia", len) == 0)
 		*type = JULIA;
@@ -97,27 +98,36 @@ int	parse_args(t_fractal *fractal, int ac, char **av)
 	{
 		if (ac != 4)
 			return (-1);
-		fractal->julia_c->real = ft_atof(av[2]);
-		fractal->julia_c->imag = ft_atof(av[3]);
+		fractal->julia_c_real = ft_atof(av[2]);
+		fractal->julia_c_imag = ft_atof(av[3]);
 	}
 	else
 	{
 		if (ac > 2)
 			return (-1);
 		else
+		{
 			//TODO: check: `&fractal->julia_c = NULL` work?
-			fractal->julia_c = NULL;
+			//fractal->julia_c = NULL;
+			fractal->julia_c_real = 0.0;
+			fractal->julia_c_imag = 0.0;
+		}
 	}
 	return (0);
+}
+
+void	print_error(void)
+{
+	ft_putstr_fd("Error", 2);
 }
 
 int	main(int ac, char **av)
 {
 	t_fractal		fractal;
-	t_fractal_type	type;
-	t_complex		*julia_c = NULL;
+	//t_fractal_type	type;
+	//t_complex		*julia_c = NULL;
 
-	if (parse_args(fractal, ac, av) == -1)
+	if (parse_args(&fractal, ac, av) == -1)
 	{
 		print_error();
 		return (0);
