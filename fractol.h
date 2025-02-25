@@ -79,7 +79,6 @@ typedef struct	s_fractal
 	//t_complex		*julia_c;
 	double			julia_c_real;
 	double			julia_c_imag;
-	int				is_julia;
 	//int				color;
 	double			zoom;
 	double			offset_x;
@@ -92,6 +91,7 @@ typedef struct	s_fractal
 	//double			c[2];
 	int				pixels_processed;
 	int				total_pixels;
+	int				needs_reset;
 }				t_fractal;
 
 void	init_mlx(t_fractal *fractal);

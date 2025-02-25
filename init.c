@@ -58,7 +58,12 @@ void	init_fractal(t_fractal *fractal)
 	//fractal->c[1] = 0.0;
 	//fractal->z = malloc(sizeof(double) * WIDTH * HEIGHT * 2);
 	fractal->calc_count = malloc(sizeof(int) * fractal->total_pixels);
+
+	fractal->needs_reset = 1;
+
+	//TODO: this can be the problem	
 	init_iter(fractal, INIT_ITER);
+
 	//if (type == JULIA)
 	//{
 	//	if (julia_c == NULL)

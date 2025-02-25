@@ -12,7 +12,7 @@
 
 NAME = fractol
 
-SRCS := main.c init.c render.c event.c
+SRCS := main.c init.c render_new.c event.c
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -O3 -march=native -g
