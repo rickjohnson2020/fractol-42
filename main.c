@@ -19,7 +19,7 @@
 
  	if (*str == '+' || *str == '-')
 		str++;
- 	if (*str++ == '\0')
+ 	if (*str == '\0')
  		return (-1);
 	if (*str == '.')
 		return (-1);
@@ -100,6 +100,7 @@ int	parse_args(t_fractal *fractal, int ac, char **av)
 			return (-1);
 		fractal->julia_c_real = ft_atof(av[2]);
 		fractal->julia_c_imag = ft_atof(av[3]);
+		printf("real: %f\n imag: %f\n", fractal->julia_c_real, fractal->julia_c_imag);
 	}
 	else
 	{
@@ -139,6 +140,7 @@ int	main(int ac, char **av)
 	draw_fractal(&fractal);
 
 	//set up hooks
+	mlx_hook(fractal.win, CLOSE_WINDOW, 1L<<2, close_fractal, &fractal);
 	mlx_mouse_hook(fractal.win, handle_zoom, &fractal);
 	mlx_key_hook(fractal.win, handle_key, &fractal);
 	mlx_loop_hook(fractal.mlx, render_frame, &fractal);

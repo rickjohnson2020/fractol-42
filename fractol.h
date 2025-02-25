@@ -25,9 +25,8 @@
 
 # define WIDTH 800
 # define HEIGHT 800
-# define OPE_PER_FLAME 10000000
+# define OPE_PER_FLAME 18000000
 # define INIT_ITER 50
-// # define MAX_ITER 50
 
 # define COLOR_BLACK 0x000000
 # define COLOR_WHITE 0xFFFFFFFF
@@ -43,19 +42,13 @@
 # define KEY_RIGHT 65363
 # define KEY_DOWN 65364
 
-
+# define CLOSE_WINDOW 17
 
 typedef enum	e_fractal_type
 {
 	MANDELBROT,
 	JULIA
 }				t_fractal_type;
-
-typedef struct	s_complex
-{
-	double	*real;
-	double	*imag;
-}				t_complex;
 
 typedef struct	s_data
 {
@@ -72,11 +65,8 @@ typedef struct	s_fractal
 	void			*win;
 	t_data			data;
 	t_fractal_type	type;
-	//t_complex		z;
 	double			*z_real;
 	double			*z_imag;
-	//TODO: check (pointer for null)
-	//t_complex		*julia_c;
 	double			julia_c_real;
 	double			julia_c_imag;
 	//int				color;
@@ -87,8 +77,6 @@ typedef struct	s_fractal
 	int				max_iter;
 	int				target_iter;
 	int				*calc_count;
-	//double			*z;
-	//double			c[2];
 	int				pixels_processed;
 	int				total_pixels;
 	int				needs_reset;
@@ -102,4 +90,5 @@ int		handle_key(int keycode, void *param);
 int		render_frame(t_fractal *fractal);
 double	map(double to_scale, double old_min, double old_max, double new_min, double new_max);
 void	init_iter(t_fractal *fractal, int iter);
+int		close_fractal(void *param);
 #endif
