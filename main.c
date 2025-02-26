@@ -39,7 +39,7 @@
 	return (0);
  }
 
- double	to_f(const char *str)
+ double	to_f(const char *str, double *d)
  {
  	int		sign;
  	long	i;
@@ -64,14 +64,15 @@
 		decimal_place /= 10;
 		f += (*str++ - '0') * decimal_place;
 	}
- 	return ((i + f) * sign);
+ 	*d = (i + f) * sign;
+	return (0);
  }
 
-double	ft_atof(const char *str)
+double	ft_atof(const char *str, double *d)
 {
 	if (validate_f(str) == -1)
 		return (-1);
-	return (to_f(str));
+	return (to_f(str, d));
 }
 
 int	set_fractal_type(char *str, t_fractal_type *type)
@@ -98,9 +99,10 @@ int	parse_args(t_fractal *fractal, int ac, char **av)
 	{
 		if (ac != 4)
 			return (-1);
-		fractal->julia_c_real = ft_atof(av[2]);
-		fractal->julia_c_imag = ft_atof(av[3]);
-		printf("real: %f\n imag: %f\n", fractal->julia_c_real, fractal->julia_c_imag);
+		if (ft_atof(av[2], &fractal->julia_c_real) == -1)
+			return (-1);
+		if (ft_atof(av[3], &fractal->julia_c_imag) == -1)
+			return (-1);
 	}
 	else
 	{
