@@ -20,9 +20,7 @@ void	print_error(void)
 
 int	main(int ac, char **av)
 {
-	t_fractal		fractal;
-	//t_fractal_type	type;
-	//t_complex		*julia_c = NULL;
+	t_fractal	fractal;
 
 	if (parse_args(&fractal, ac, av) == -1)
 	{
@@ -31,16 +29,13 @@ int	main(int ac, char **av)
 	}
 	//TODO: check if this should be before parse_args
 	init_fractal(&fractal);
-
 	init_mlx(&fractal);
 	draw_fractal(&fractal);
-
 	//set up hooks
-	mlx_hook(fractal.win, CLOSE_WINDOW, 1L<<2, close_fractal, &fractal);
+	mlx_hook(fractal.win, CLOSE_WINDOW, 1L << 2, close_fractal, &fractal);
 	mlx_mouse_hook(fractal.win, handle_zoom, &fractal);
 	mlx_key_hook(fractal.win, handle_key, &fractal);
 	mlx_loop_hook(fractal.mlx, render_frame, &fractal);
-
 	mlx_loop(fractal.mlx);
 	return (0);
 }

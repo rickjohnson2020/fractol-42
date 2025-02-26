@@ -38,7 +38,9 @@ void	init_mlx(t_fractal *fractal)
 		free(fractal->mlx);
 		malloc_error();
 	}
-	fractal->data.addr = mlx_get_data_addr(fractal->data.img, &fractal->data.bits_per_pixel, &fractal->data.line_len, &fractal->data.endian);
+	fractal->data.addr = mlx_get_data_addr(
+			fractal->data.img, &fractal->data.bits_per_pixel,
+			&fractal->data.line_len, &fractal->data.endian);
 }
 
 void	init_iter(t_fractal *fractal, int iter)
@@ -46,7 +48,12 @@ void	init_iter(t_fractal *fractal, int iter)
 	int	i;
 
 	fractal->pixels_processed = 0;
-	if (iter)
+	if (iter == 0)
+	{
+		if (fractal->max_iter < INT_MAX / 1.5)
+			fractal->max_iter = fractal->max_iter * 1.5;
+	}
+	else
 	{
 		//TODO: check
 		fractal->max_iter = iter;
@@ -59,28 +66,18 @@ void	init_iter(t_fractal *fractal, int iter)
 			i++;
 		}
 	}
-	else
-	{
-		if (fractal->max_iter < INT_MAX / 1.5)
-			fractal->max_iter = fractal->max_iter * 1.5;
-	}
 }
 
 void	init_fractal(t_fractal *fractal)
 {
-	//fractal->color = 120;
 	fractal->zoom = 200;
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
 	fractal->offset_step = 100;
-	fractal->max_iter = INIT_ITER;
-	fractal->pixels_processed = 0;
 	fractal->calc_count = 0;
 	fractal->total_pixels = HEIGHT * WIDTH;
 	fractal->z_real = malloc(sizeof(double) * fractal->total_pixels);
 	fractal->z_imag = malloc(sizeof(double) * fractal->total_pixels);
 	fractal->calc_count = malloc(sizeof(int) * fractal->total_pixels);
-
-	//TODO: this can be the problem	
 	init_iter(fractal, INIT_ITER);
 }
