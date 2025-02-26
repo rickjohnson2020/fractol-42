@@ -41,6 +41,31 @@ void	init_mlx(t_fractal *fractal)
 	fractal->data.addr = mlx_get_data_addr(fractal->data.img, &fractal->data.bits_per_pixel, &fractal->data.line_len, &fractal->data.endian);
 }
 
+void	init_iter(t_fractal *fractal, int iter)
+{
+	int	i;
+
+	fractal->pixels_processed = 0;
+	if (iter)
+	{
+		//TODO: check
+		fractal->max_iter = iter;
+		i = 0;
+		while (i < fractal->total_pixels)
+		{
+			fractal->z_real[i] = 0.0;
+			fractal->z_imag[i] = 0.0;
+			fractal->calc_count[i] = 0;
+			i++;
+		}
+	}
+	else
+	{
+		if (fractal->max_iter < INT_MAX / 1.5)
+			fractal->max_iter = fractal->max_iter * 1.5;
+	}
+}
+
 void	init_fractal(t_fractal *fractal)
 {
 	//fractal->color = 120;

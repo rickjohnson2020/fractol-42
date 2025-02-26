@@ -6,7 +6,7 @@
 /*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:33:57 by riyano            #+#    #+#             */
-/*   Updated: 2025/02/12 17:34:58 by riyano           ###   ########.fr       */
+/*   Updated: 2025/02/26 15:35:58 by riyano           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@
 # include <unistd.h>
 # include <math.h>
 # include <limits.h>
-# include "./minilibx-linux/mlx.h"
-# include "./libft/libft.h"
+# include "../minilibx-linux/mlx.h"
+# include "../libft/libft.h"
 
-# define ERROR_MESSAGE "Usage: \"./fractol mandelbrot\" or \"./fractol julia <value_1> <value_2>\""
+# define ERROR_MESSAGE "\
+	Usage: ./fractol mandelbrot \
+	or ./fractol julia <real> <imag>"
 
 # define WIDTH 800
 # define HEIGHT 800
-# define OPE_PER_FLAME 18000000
+# define OPE_PER_FLAME 10000000
 # define INIT_ITER 50
 
 # define COLOR_BLACK 0x000000
@@ -36,30 +38,29 @@
 
 # define MOUSE_DOWN 4
 # define MOUSE_UP 5
+# define CLOSE_WINDOW 17
 # define KEY_ESC 65307
 # define KEY_LEFT 65361
 # define KEY_UP 65362
 # define KEY_RIGHT 65363
 # define KEY_DOWN 65364
 
-# define CLOSE_WINDOW 17
-
-typedef enum	e_fractal_type
+typedef enum e_fractal_type
 {
 	MANDELBROT,
 	JULIA
-}				t_fractal_type;
+}	t_fractal_type;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		endian;
 	int		line_len;
-}				t_data;
+}	t_data;
 
-typedef struct	s_fractal
+typedef struct s_fractal
 {
 	void			*mlx;
 	void			*win;
@@ -79,8 +80,7 @@ typedef struct	s_fractal
 	int				*calc_count;
 	int				pixels_processed;
 	int				total_pixels;
-	int				needs_reset;
-}				t_fractal;
+}	t_fractal;
 
 void	init_mlx(t_fractal *fractal);
 void	init_fractal(t_fractal *fractal);
@@ -88,7 +88,11 @@ void	draw_fractal(t_fractal *fractal);
 int		handle_zoom(int button, int x, int y, void *param);
 int		handle_key(int keycode, void *param);
 int		render_frame(t_fractal *fractal);
-double	map(double to_scale, double old_min, double old_max, double new_min, double new_max);
+double	map(double to_scale, double old_max, double new_min, double new_max);
 void	init_iter(t_fractal *fractal, int iter);
 int		close_fractal(void *param);
+int		parse_args(t_fractal *fractal, int ac, char **av);
+int		calculate_mandelbrot(int x, int y, t_fractal *fractal);
+int		calculate_julia(int x, int y, t_fractal *fractal);
+
 #endif

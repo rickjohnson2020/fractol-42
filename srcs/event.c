@@ -1,4 +1,16 @@
-#include "./fractol.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   event.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/26 15:39:43 by riyano            #+#    #+#             */
+/*   Updated: 2025/02/26 15:40:21 by riyano           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/fractol.h"
 
 int	handle_zoom(int button, int x, int y, void *param)
 {
@@ -8,8 +20,8 @@ int	handle_zoom(int button, int x, int y, void *param)
 	//double		new_zoom;
 	
 	fractal = (t_fractal *)param;
-	mouse_real = map((double)x, 0, WIDTH, -2.0 * fractal->zoom + fractal->offset_x, 2.0 * fractal->zoom + fractal->offset_x);
-	mouse_imag = map((double)y, 0, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y, 2.0 * fractal->zoom + fractal->offset_y);
+	mouse_real = map((double)x, WIDTH, -2.0 * fractal->zoom + fractal->offset_x, 2.0 * fractal->zoom + fractal->offset_x);
+	mouse_imag = map((double)y, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y, 2.0 * fractal->zoom + fractal->offset_y);
 	if (button == MOUSE_UP)
 		fractal->zoom *= 0.9;
 	else if (button == MOUSE_DOWN)
