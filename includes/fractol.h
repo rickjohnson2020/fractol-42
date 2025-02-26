@@ -21,10 +21,6 @@
 # include "../minilibx-linux/mlx.h"
 # include "../libft/libft.h"
 
-# define ERROR_MESSAGE "\
-	Usage: ./fractol mandelbrot \
-	or ./fractol julia <real> <imag>"
-
 # define WIDTH 800
 # define HEIGHT 800
 # define OPE_PER_FLAME 10000000

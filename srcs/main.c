@@ -6,7 +6,7 @@
 /*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:21:36 by riyano            #+#    #+#             */
-/*   Updated: 2025/02/26 15:25:05 by riyano           ###   ########.fr       */
+/*   Updated: 2025/02/26 16:04:22 by riyano           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	print_error(void)
 {
-	ft_putstr_fd(ERROR_MESSAGE, 2);
+	ft_putstr_fd("Usage: ./fractol mandlebrot | \
+./fractol julia <real number> <imaginary number>\n", 2);
 }
 
 int	main(int ac, char **av)
