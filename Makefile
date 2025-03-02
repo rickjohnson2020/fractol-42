@@ -12,7 +12,7 @@
 
 NAME = fractol
 
-SRCS = srcs/main.c srcs/init.c srcs/render_new.c srcs/event.c srcs/mandelbrot.c \
+SRCS = srcs/main.c srcs/init.c srcs/render.c srcs/event.c srcs/mandelbrot.c \
 	   srcs/julia.c srcs/parse.c srcs/utils.c
 
 CC = cc

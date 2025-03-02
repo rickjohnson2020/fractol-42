@@ -15,14 +15,10 @@
 int	handle_zoom(int button, int x, int y, void *param)
 {
 	t_fractal	*fractal;
-	double		mouse_real;
-	double		mouse_imag;
+	(void)x;
+	(void)y;
 
 	fractal = (t_fractal *)param;
-	mouse_real = map((double)x, WIDTH, -2.0 * fractal->zoom + fractal->offset_x,
-			2.0 * fractal->zoom + fractal->offset_x);
-	mouse_imag = map((double)y, HEIGHT, -2.0 * fractal->zoom + fractal->offset_y,
-			2.0 * fractal->zoom + fractal->offset_y);
 	if (button == MOUSE_UP)
 		fractal->zoom *= 0.9;
 	else if (button == MOUSE_DOWN)

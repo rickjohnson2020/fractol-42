@@ -74,7 +74,7 @@ void	init_fractal(t_fractal *fractal)
 	fractal->offset_x = 0.0;
 	fractal->offset_y = 0.0;
 	fractal->offset_step = 100;
-	fractal->calc_count = 0;
+	//fractal->calc_count = 0;
 	fractal->total_pixels = HEIGHT * WIDTH;
 	fractal->z_real = malloc(sizeof(double) * fractal->total_pixels);
 	fractal->z_imag = malloc(sizeof(double) * fractal->total_pixels);

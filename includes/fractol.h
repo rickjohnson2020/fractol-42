@@ -66,7 +66,6 @@ typedef struct s_fractal
 	double			*z_imag;
 	double			julia_c_real;
 	double			julia_c_imag;
-	//int				color;
 	double			zoom;
 	double			offset_x;
 	double			offset_y;
@@ -84,7 +83,6 @@ void	draw_fractal(t_fractal *fractal);
 int		handle_zoom(int button, int x, int y, void *param);
 int		handle_key(int keycode, void *param);
 int		render_frame(t_fractal *fractal);
-double	map(double to_scale, double old_max, double new_min, double new_max);
 void	init_iter(t_fractal *fractal, int iter);
 int		close_fractal(void *param);
 int		parse_args(t_fractal *fractal, int ac, char **av);
