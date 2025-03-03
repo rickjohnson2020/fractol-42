@@ -34,7 +34,7 @@
 
 # define MOUSE_DOWN 4
 # define MOUSE_UP 5
-# define CLOSE_WINDOW 17
+# define WINDOW_CLOSE 17
 # define KEY_ESC 65307
 # define KEY_LEFT 65361
 # define KEY_UP 65362
@@ -72,7 +72,6 @@ typedef struct s_fractal
 	double			offset_step;
 	int				max_iter;
 	int				target_iter;
-	int				*calc_count;
 	int				pixels_processed;
 	int				total_pixels;
 }	t_fractal;

@@ -13,7 +13,7 @@
 NAME = fractol
 
 SRCS = srcs/main.c srcs/init.c srcs/render.c srcs/event.c srcs/mandelbrot.c \
-	   srcs/julia.c srcs/parse.c srcs/utils.c
+	   srcs/julia.c srcs/parse.c
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -O3 -march=native -g

@@ -32,7 +32,7 @@ int	close_fractal(void *param)
 	t_fractal	*fractal;
 
 	fractal = (t_fractal *)param;
-	free(fractal->calc_count);
+	//free(fractal->calc_count);
 	free(fractal->z_real);
 	free(fractal->z_imag);
 	mlx_destroy_window(fractal->mlx, fractal->win);

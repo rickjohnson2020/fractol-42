@@ -21,6 +21,7 @@ static void	malloc_error(void)
 void	init_mlx(t_fractal *fractal)
 {
 	fractal->mlx = mlx_init();
+	fractal->data.img = NULL;
 	if (fractal->mlx == NULL)
 		malloc_error();
 	fractal->win = mlx_new_window(fractal->mlx, WIDTH, HEIGHT, "fract'ol");
@@ -30,17 +31,17 @@ void	init_mlx(t_fractal *fractal)
 		free(fractal->mlx);
 		malloc_error();
 	}
-	fractal->data.img = mlx_new_image(fractal->mlx, WIDTH, HEIGHT);
-	if (fractal->data.img == NULL)
-	{
-		mlx_destroy_window(fractal->mlx, fractal->win);
-		mlx_destroy_display(fractal->mlx);
-		free(fractal->mlx);
-		malloc_error();
-	}
-	fractal->data.addr = mlx_get_data_addr(
-			fractal->data.img, &fractal->data.bits_per_pixel,
-			&fractal->data.line_len, &fractal->data.endian);
+	// fractal->data.img = mlx_new_image(fractal->mlx, WIDTH, HEIGHT);
+	// if (fractal->data.img == NULL)
+	// {
+	// 	mlx_destroy_window(fractal->mlx, fractal->win);
+	// 	mlx_destroy_display(fractal->mlx);
+	// 	free(fractal->mlx);
+	// 	malloc_error();
+	// }
+	// fractal->data.addr = mlx_get_data_addr(
+	// 		fractal->data.img, &fractal->data.bits_per_pixel,
+	// 		&fractal->data.line_len, &fractal->data.endian);
 }
 
 void	init_iter(t_fractal *fractal, int iter)
@@ -62,7 +63,7 @@ void	init_iter(t_fractal *fractal, int iter)
 		{
 			fractal->z_real[i] = 0.0;
 			fractal->z_imag[i] = 0.0;
-			fractal->calc_count[i] = 0;
+			//fractal->calc_count[i] = 0;
 			i++;
 		}
 	}
@@ -78,6 +79,6 @@ void	init_fractal(t_fractal *fractal)
 	fractal->total_pixels = HEIGHT * WIDTH;
 	fractal->z_real = malloc(sizeof(double) * fractal->total_pixels);
 	fractal->z_imag = malloc(sizeof(double) * fractal->total_pixels);
-	fractal->calc_count = malloc(sizeof(int) * fractal->total_pixels);
-	init_iter(fractal, INIT_ITER);
+	//fractal->calc_count = malloc(sizeof(int) * fractal->total_pixels);
+	//init_iter(fractal, INIT_ITER);
 }

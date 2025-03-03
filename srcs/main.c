@@ -32,7 +32,7 @@ int	main(int ac, char **av)
 	init_mlx(&fractal);
 	draw_fractal(&fractal);
 	//set up hooks
-	mlx_hook(fractal.win, CLOSE_WINDOW, 1L << 2, close_fractal, &fractal);
+	mlx_hook(fractal.win, WINDOW_CLOSE, 1L << 2, close_fractal, &fractal);
 	mlx_mouse_hook(fractal.win, handle_zoom, &fractal);
 	mlx_key_hook(fractal.win, handle_key, &fractal);
 	mlx_loop_hook(fractal.mlx, render_frame, &fractal);

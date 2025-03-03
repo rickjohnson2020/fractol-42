@@ -32,6 +32,6 @@ int	calculate_julia(int x, int y, t_fractal *fractal)
 		if (++iter >= fractal->max_iter)
 			break ;
 	}
-	fractal->calc_count[idx] += iter;
+	//fractal->calc_count[idx] += iter;
 	return (iter);
 }
