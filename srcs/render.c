@@ -12,22 +12,37 @@
 
 #include "../includes/fractol.h"
 
+// Returns a pointer to the pixel at coordinates (x, y) in the image buffer.
+// It calculates the memory offset by multiplying the row number (y)
+// by the number of bytes per row (line_len)
+// and adding the column offset (x times the number of bytes per pixel).
 static char	*get_pixel(int x, int y, t_data *data)
 {
 	return (data->addr + (y * data->line_len + x * (data->bits_per_pixel / 8)));
 }
 
+// Computes a simple color based on how many iterations were performed.
+// If the pixel reached the maximum number of iterations
+// (meaning it likely did not escape),
+// it returns black. Otherwise, it calculates a normalized value 't'
+// (between 0 and 1) by dividing iter by the maximum iteration count.
+// Then it creates a gradient:
+// - The red component increases with t.
+// - The green component decreases with t.
+// - The blue component is set to a constant value (128).
+// Finally, the individual RGB values are combined into one 24-bit color value.
 static int	calculate_color(int iter, t_fractal *fractal)
 {
-	int	r;
-	int	g;
-	int	b;
+	double	t;
+	int		r;
+	int		g;
+	int		b;
 
 	if (iter == fractal->max_iter)
 		return (COLOR_BLACK);
 	else
 	{
-		double t = (double)iter / fractal->max_iter;
+		t = (double)iter / fractal->max_iter;
 		r = (int)(255 * t);
 		g = (int)(255 * (1 - t));
 		b = 128;
@@ -35,6 +50,17 @@ static int	calculate_color(int iter, t_fractal *fractal)
 	}
 }
 
+// Calculates and sets the color for a single pixel identified by 'pixel_idx'.
+// It first converts the one-dimensional pixel index
+// into two-dimensional coordinates (x, y).
+// Then, it obtains a pointer 'dst' to the pixel's location
+// in the image buffer using get_pixel().
+// If the pixel has not been computed yet, 
+// it calls the appropriate fractal calculation function
+// to compute the iteration count for that pixel.
+// And it calls calculate_color() to determine the pixel's color
+// and writes that color into the image buffer at the location pointed by dst.
+// Finally, it returns the iteration count for that pixel.
 static int	calc_pixel(int pixel_idx, t_fractal *fractal)
 {
 	char	*dst;
@@ -46,7 +72,6 @@ static int	calc_pixel(int pixel_idx, t_fractal *fractal)
 	y = pixel_idx / WIDTH;
 	dst = get_pixel(x, y, &fractal->data);
 	iter = 1;
-	//TODO: check the condition here.
 	if (*dst == 0)
 	{
 		if (fractal->type == MANDELBROT)
@@ -67,7 +92,6 @@ int	render_frame(t_fractal *fractal)
 	pixel_idx = fractal->pixels_processed;
 	while (pixel_idx < fractal->total_pixels)
 	{
-		//if all pixels are filled or iter count is reached limit 
 		if (pixel_idx >= fractal->total_pixels - 1 || iter > OPE_PER_FLAME)
 		{
 			mlx_put_image_to_window(
@@ -76,7 +100,6 @@ int	render_frame(t_fractal *fractal)
 				init_iter(fractal, 0);
 			return (0);
 		}
-		//put color to dst
 		iter += calc_pixel(11 * pixel_idx % fractal->total_pixels, fractal);
 		fractal->pixels_processed = pixel_idx;
 		pixel_idx++;

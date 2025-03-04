@@ -12,7 +12,7 @@
 
 #include "../includes/fractol.h"
 
-void	print_error(void)
+static void	print_error(void)
 {
 	ft_putstr_fd("Usage: ./fractol mandlebrot | \
 ./fractol julia <real number> <imaginary number>\n", 2);
@@ -27,11 +27,9 @@ int	main(int ac, char **av)
 		print_error();
 		return (0);
 	}
-	//TODO: check if this should be before parse_args
 	init_fractal(&fractal);
 	init_mlx(&fractal);
 	draw_fractal(&fractal);
-	//set up hooks
 	mlx_hook(fractal.win, WINDOW_CLOSE, 1L << 2, close_fractal, &fractal);
 	mlx_mouse_hook(fractal.win, handle_zoom, &fractal);
 	mlx_key_hook(fractal.win, handle_key, &fractal);
